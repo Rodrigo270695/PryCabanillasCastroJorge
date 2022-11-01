@@ -53,108 +53,112 @@ public class ClienteController {
         return lista;
 
     }
-//
-//    public void eliminar(int id) throws Exception {
-//
-//        sql = "DELETE FROM cliente WHERE cliente_id = ?";
-//
-//        try {
-//
-//            con = estado.conectar();
-//            ps = con.prepareStatement(sql);
-//            ps.setInt(1, id);
-//            ps.executeUpdate();
-//
-//        } catch (PSQLException pe) {
-//            pe.printStackTrace(System.err);
-//            throw new Exception("El continente no se puede eliminar, porque está siendo USADO");
-//        } catch (SQLException e) {
-//            e.printStackTrace(System.err);
-//        } finally {
-//            try {
-//                con.close();
-//                ps.close();
-//            } catch (SQLException ex) {
-//                ex.printStackTrace(System.err);
-//            }
-//        }
-//
-//    }
-//
-//    public Object obtenerdato(int id) {
-//
-//        Cliente cliente = new Cliente();
-//        sql = "SELECT * FROM cliente WHERE cliente_id = " + id;
-//
-//        try {
-//
-//            con = estado.conectar();
-//            ps = con.prepareStatement(sql);
-//            rs = ps.executeQuery();
-//
-//            if (rs.next()) {
-//                cliente.setClienteId(rs.getInt(1));
-//                cliente.setNombreCompleto(rs.getString(2));
-//                cliente.setDireccion(rs.getString(3));
-//                cliente.setCorreo(rs.getString(4));
-//                cliente.setFoto(rs.getBinaryStream(5));
-//            }
-//
-//        } catch (SQLException e) {
-//            e.printStackTrace(System.err);
-//        } finally {
-//            try {
-//                con.close();
-//                ps.close();
-//                rs.close();
-//            } catch (SQLException ex) {
-//                ex.printStackTrace(System.err);
-//            }
-//        }
-//
-//        return cliente;
-//
-//    }
-//
-//    public List buscar(Object obj) {
-//
-//        List lista = new ArrayList();
-//        sql = "SELECT * FROM cliente WHERE nombre_completo LIKE '%"+obj+"%'\n"
-//                + "OR direccion LIKE '%"+obj+"%'\n"
-//                + "OR correo LIKE '%"+obj+"%'";
-//
-//        try {
-//
-//            con = estado.conectar();
-//            ps = con.prepareStatement(sql);
-//            rs = ps.executeQuery();
-//
-//            while (rs.next()) {
-//                Cliente cliente = new Cliente();
-//                cliente.setClienteId(rs.getInt(1));
-//                cliente.setNombreCompleto(rs.getString(2));
-//                cliente.setDireccion(rs.getString(3));
-//                cliente.setCorreo(rs.getString(4));
-//                cliente.setFoto(rs.getBinaryStream(5));
-//                lista.add(cliente);
-//            }
-//
-//        } catch (SQLException e) {
-//            e.printStackTrace(System.err);
-//        } finally {
-//            try {
-//                con.close();
-//                ps.close();
-//                rs.close();
-//            } catch (SQLException ex) {
-//                ex.printStackTrace(System.err);
-//            }
-//        }
-//
-//        return lista;
-//
-//    }
-//
+
+    public void eliminar(int id) throws Exception {
+
+        sql = "DELETE FROM cliente WHERE clienteid = ?";
+
+        try {
+
+            con = estado.conectar();
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, id);
+            ps.executeUpdate();
+
+        } catch (PSQLException pe) {
+            pe.printStackTrace(System.err);
+            throw new Exception("El continente no se puede eliminar, porque está siendo USADO");
+        } catch (SQLException e) {
+            e.printStackTrace(System.err);
+        } finally {
+            try {
+                con.close();
+                ps.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.err);
+            }
+        }
+
+    }
+
+    public Cliente obtenerdato(int id) {
+
+        Cliente cliente = new Cliente();
+        sql = "SELECT * FROM cliente WHERE clienteid = " + id;
+
+        try {
+
+            con = estado.conectar();
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                cliente.setClienteId(rs.getInt(1));
+                cliente.setDocumento(rs.getString(2));
+                cliente.setNombres(rs.getString(3));
+                cliente.setApellidos(rs.getString(4));
+                cliente.setDireccion(rs.getString(5));
+                cliente.setTelefono(rs.getString(6));
+                cliente.setCorreo(rs.getString(7));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace(System.err);
+        } finally {
+            try {
+                con.close();
+                ps.close();
+                rs.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.err);
+            }
+        }
+
+        return cliente;
+
+    }
+
+    public List buscar(Object obj) {
+
+        List lista = new ArrayList();
+        sql = "SELECT * FROM cliente WHERE nombres LIKE '%"+obj+"%'\n"
+                + "OR apellidos LIKE '%"+obj+"%'\n"
+                + "OR documentoc LIKE '%"+obj+"%'";
+
+        try {
+
+            con = estado.conectar();
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Cliente cliente = new Cliente();
+                cliente.setClienteId(rs.getInt(1));
+                cliente.setDocumento(rs.getString(2));
+                cliente.setNombres(rs.getString(3));
+                cliente.setApellidos(rs.getString(4));
+                cliente.setDireccion(rs.getString(5));
+                cliente.setTelefono(rs.getString(6));
+                cliente.setCorreo(rs.getString(7));
+                lista.add(cliente);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace(System.err);
+        } finally {
+            try {
+                con.close();
+                ps.close();
+                rs.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.err);
+            }
+        }
+
+        return lista;
+
+    }
+
     public void registrar(Cliente cliente) throws Exception {
 
         sql = "INSERT INTO cliente(documentoc, nombres, apellidos, direccion,telefono,correo) "

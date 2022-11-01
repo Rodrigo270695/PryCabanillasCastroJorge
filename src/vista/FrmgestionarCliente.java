@@ -41,15 +41,16 @@ public final class FrmgestionarCliente extends javax.swing.JInternalFrame {
 
         tblListado.setModel(modelo);
     }
-    
-    void limpiar(){
+
+    void limpiar() {
         txtApellidos.setText("");
         txtBuscar.setText("");
         txtDireccion.setText("");
-        txtDireccion.setText("");
+        txtCorreo.setText("");
         txtDni.setText("");
         txtNombres.setText("");
         txtTelefono.setText("");
+        clienteId = 0;
     }
 
     @SuppressWarnings("unchecked")
@@ -103,6 +104,11 @@ public final class FrmgestionarCliente extends javax.swing.JInternalFrame {
         jLabel7.setText("Correo:");
 
         btnNuevo.setText("Nuevo");
+        btnNuevo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNuevoActionPerformed(evt);
+            }
+        });
 
         btnGranbar.setText("Grabar");
         btnGranbar.addActionListener(new java.awt.event.ActionListener() {
@@ -112,6 +118,11 @@ public final class FrmgestionarCliente extends javax.swing.JInternalFrame {
         });
 
         btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -221,6 +232,12 @@ public final class FrmgestionarCliente extends javax.swing.JInternalFrame {
 
         jLabel8.setText("Buscar:");
 
+        txtBuscar.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtBuscarKeyReleased(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -268,39 +285,116 @@ public final class FrmgestionarCliente extends javax.swing.JInternalFrame {
 
     private void btnGranbarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGranbarActionPerformed
 
+        Cliente cliente = new Cliente();
+        cliente.setDocumento(txtDni.getText());
+        cliente.setNombres(txtNombres.getText());
+        cliente.setApellidos(txtApellidos.getText());
+        cliente.setCorreo(txtCorreo.getText());
+        cliente.setTelefono(txtTelefono.getText());
+        cliente.setDireccion(txtDireccion.getText());
+
         if (btnGranbar.getText().equalsIgnoreCase("Grabar")) {
 
-            Cliente cliente = new Cliente();
-            cliente.setDocumento(txtDni.getText());
-            cliente.setNombres(txtNombres.getText());
-            cliente.setApellidos(txtApellidos.getText());
-            cliente.setCorreo(txtCorreo.getText());
-            cliente.setTelefono(txtTelefono.getText());
-            cliente.setDireccion(txtDireccion.getText());
             try {
 
                 clienteC.registrar(cliente);
                 JOptionPane.showMessageDialog(this, "Cliente registrado");
                 listar();
                 limpiar();
-                
+
             } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Ocurrio un error");
             }
 
         } else {
+            try {
 
+                cliente.setClienteId(clienteId);
+
+                clienteC.modificar(cliente);
+                JOptionPane.showMessageDialog(this, "Cliente Modificado");
+                listar();
+                limpiar();
+                btnGranbar.setText("Grabar");
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Ocurrio un error");
+            }
         }
 
     }//GEN-LAST:event_btnGranbarActionPerformed
 
     private void tblListadoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblListadoMouseClicked
-        
+
         int fila = tblListado.getSelectedRow();
-        
+
         clienteId = Integer.parseInt(tblListado.getValueAt(fila, 0).toString());
-        
-        
+        txtDni.setText(tblListado.getValueAt(fila, 1).toString());
+        txtNombres.setText(tblListado.getValueAt(fila, 2).toString());
+        txtApellidos.setText(tblListado.getValueAt(fila, 3).toString());
+        txtDireccion.setText(tblListado.getValueAt(fila, 4).toString());
+        txtTelefono.setText(tblListado.getValueAt(fila, 5).toString());
+        txtCorreo.setText(tblListado.getValueAt(fila, 6).toString());
+
+        btnGranbar.setText("Editar");
     }//GEN-LAST:event_tblListadoMouseClicked
+
+    private void btnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoActionPerformed
+        listar();
+        limpiar();
+        btnGranbar.setText("Grabar");
+    }//GEN-LAST:event_btnNuevoActionPerformed
+
+    private void txtBuscarKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBuscarKeyReleased
+
+        String columnas[] = {"ID", "DNI", "NOMBRES", "APELLIDOS", "DIRECCION", "TELEFONO", "CORREO"};
+        DefaultTableModel modelo = new DefaultTableModel();
+
+        for (String columna : columnas) {
+            modelo.addColumn(columna);
+        }
+
+        List<Cliente> lista = clienteC.buscar(txtBuscar.getText());
+
+        for (Cliente cliente : lista) {
+            modelo.addRow(new Object[]{
+                cliente.getClienteId(),
+                cliente.getDocumento(),
+                cliente.getNombres(),
+                cliente.getApellidos(),
+                cliente.getDireccion(),
+                cliente.getTelefono(),
+                cliente.getCorreo()
+            });
+        }
+
+        tblListado.setModel(modelo);
+
+    }//GEN-LAST:event_txtBuscarKeyReleased
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+
+        int respuesta = JOptionPane.showConfirmDialog(this, "¿Está seguro de eliminar al cliente?");
+
+        if (clienteId != 0) {
+            if (respuesta == 0) {
+
+                try {
+                    clienteC.eliminar(clienteId);
+                    listar();
+                    limpiar();
+                    JOptionPane.showMessageDialog(this, "Se elimino el cliente");
+                    
+
+                } catch (Exception e) {
+                }
+            }
+        }else{
+            JOptionPane.showMessageDialog(this, "Debe seleccionar un cliente");
+        }
+
+
+    }//GEN-LAST:event_btnEliminarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
