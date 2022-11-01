@@ -2,12 +2,20 @@
 package vista;
 
 import controlador.ClienteController;
+import controlador.CuotaController;
+import controlador.PrestamoController;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import javax.swing.JOptionPane;
 import modelo.Cliente;
+import modelo.Prestamo;
 
 public final class GestionarPrestamos extends javax.swing.JInternalFrame {
 
     ClienteController clienteC = new ClienteController();
+    PrestamoController prestamoC  = new PrestamoController();
+    CuotaController cuotaC = new CuotaController();
+    SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
 
     public GestionarPrestamos() {
         initComponents();
@@ -67,6 +75,11 @@ public final class GestionarPrestamos extends javax.swing.JInternalFrame {
         cbxCliente.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         btnRegistrar.setText("Registrar");
+        btnRegistrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRegistrarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -153,6 +166,31 @@ public final class GestionarPrestamos extends javax.swing.JInternalFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
+        
+        Prestamo prestamo = new Prestamo();
+        prestamo.setFecha(java.sql.Date.valueOf(formato.format(txtFecha.getDate())));
+        prestamo.setMonto(Double.parseDouble(txtMonto.getText()));
+        prestamo.setMoneda(cbxMoneda.getSelectedItem().toString());
+        prestamo.setCuotas(Integer.parseInt(txtCuotas.getValue().toString()));
+        prestamo.setInteres(Double.parseDouble(txtInteres.getText()));
+        prestamo.setCliente(clienteC.obtenerdato(cbxCliente.getSelectedItem().toString()));
+        
+        
+        
+        try {
+            
+            prestamoC.registrar(prestamo);
+            JOptionPane.showMessageDialog(this, "Prestamos Registrado y cuotas creadas");
+            
+            
+            
+            
+        } catch (Exception e) {
+        }
+        
+    }//GEN-LAST:event_btnRegistrarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

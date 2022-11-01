@@ -67,7 +67,7 @@ public class ClienteController {
 
         } catch (PSQLException pe) {
             pe.printStackTrace(System.err);
-            throw new Exception("El continente no se puede eliminar, porque está siendo USADO");
+            throw new Exception("El cliente no se puede eliminar, porque está siendo USADO");
         } catch (SQLException e) {
             e.printStackTrace(System.err);
         } finally {
@@ -224,6 +224,43 @@ public class ClienteController {
                 ex.printStackTrace(System.err);
             }
         }
+
+    }
+    
+    public Cliente obtenerdato(String apellidos) {
+
+        Cliente cliente = new Cliente();
+        sql = "SELECT * FROM cliente WHERE apellidos = '" + apellidos+"'";
+
+        try {
+
+            con = estado.conectar();
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                cliente.setClienteId(rs.getInt(1));
+                cliente.setDocumento(rs.getString(2));
+                cliente.setNombres(rs.getString(3));
+                cliente.setApellidos(rs.getString(4));
+                cliente.setDireccion(rs.getString(5));
+                cliente.setTelefono(rs.getString(6));
+                cliente.setCorreo(rs.getString(7));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace(System.err);
+        } finally {
+            try {
+                con.close();
+                ps.close();
+                rs.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.err);
+            }
+        }
+
+        return cliente;
 
     }
     
