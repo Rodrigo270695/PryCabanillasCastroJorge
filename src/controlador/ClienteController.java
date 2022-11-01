@@ -5,6 +5,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import modelo.Cliente;
+import org.postgresql.util.PSQLException;
 
 public class ClienteController {
     
@@ -17,7 +18,7 @@ public class ClienteController {
     public List listar() {
 
         List lista = new ArrayList();
-        sql = "SELECT * FROM cliente ORDER BY cliente_id DESC";
+        sql = "SELECT * FROM cliente ORDER BY clienteid DESC";
 
         try {
 
@@ -82,7 +83,7 @@ public class ClienteController {
 //
 //    public Object obtenerdato(int id) {
 //
-//        Agente cliente = new Agente();
+//        Cliente cliente = new Cliente();
 //        sql = "SELECT * FROM cliente WHERE cliente_id = " + id;
 //
 //        try {
@@ -92,7 +93,7 @@ public class ClienteController {
 //            rs = ps.executeQuery();
 //
 //            if (rs.next()) {
-//                cliente.setAgenteId(rs.getInt(1));
+//                cliente.setClienteId(rs.getInt(1));
 //                cliente.setNombreCompleto(rs.getString(2));
 //                cliente.setDireccion(rs.getString(3));
 //                cliente.setCorreo(rs.getString(4));
@@ -129,8 +130,8 @@ public class ClienteController {
 //            rs = ps.executeQuery();
 //
 //            while (rs.next()) {
-//                Agente cliente = new Agente();
-//                cliente.setAgenteId(rs.getInt(1));
+//                Cliente cliente = new Cliente();
+//                cliente.setClienteId(rs.getInt(1));
 //                cliente.setNombreCompleto(rs.getString(2));
 //                cliente.setDireccion(rs.getString(3));
 //                cliente.setCorreo(rs.getString(4));
@@ -154,67 +155,72 @@ public class ClienteController {
 //
 //    }
 //
-//    public void registrar(Object obj) throws Exception {
-//
-//        Agente cliente = (Agente) obj;
-//        sql = "INSERT INTO cliente(nombre_completo, direccion, correo, foto) VALUES(?,?,?,?)";
-//
-//        try {
-//
-//            con = estado.conectar();
-//            ps = con.prepareStatement(sql);
-//            ps.setString(1, cliente.getNombreCompleto());
-//            ps.setString(2, cliente.getDireccion());
-//            ps.setString(3, cliente.getCorreo());
-//            ps.setBinaryStream(4, cliente.getFoto());
-//            ps.executeUpdate();
-//
-//        } catch (PSQLException pe) {
-//            pe.printStackTrace(System.err);
-//            throw new Exception("Ya existe el Agente");
-//        } catch (SQLException e) {
-//            e.printStackTrace(System.err);
-//        } finally {
-//            try {
-//                con.close();
-//                ps.close();
-//            } catch (SQLException ex) {
-//                ex.printStackTrace(System.err);
-//            }
-//        }
-//
-//    }
-//
-//    public void modificar(Object obj) throws Exception {
-//
-//        Agente cliente = (Agente) obj;
-//        sql = "UPDATE cliente SET nombre_completo=?, direccion=?, correo=?, foto=? WHERE cliente_id = ?";
-//
-//        try {
-//
-//            con = estado.conectar();
-//            ps = con.prepareStatement(sql);
-//            ps.setString(1, cliente.getNombreCompleto());
-//            ps.setString(2, cliente.getDireccion());
-//            ps.setString(3, cliente.getCorreo());
-//            ps.setBinaryStream(4, cliente.getFoto());
-//            ps.setInt(5, cliente.getAgenteId());
-//            ps.executeUpdate();
-//
-//        } catch (PSQLException pe) {
-//            pe.printStackTrace(System.err);
-//            throw new Exception("Ya existe el Agente");
-//        } catch (SQLException e) {
-//            e.printStackTrace(System.err);
-//        } finally {
-//            try {
-//                con.close();
-//                ps.close();
-//            } catch (SQLException ex) {
-//                ex.printStackTrace(System.err);
-//            }
-//        }
-//
-//    }
+    public void registrar(Cliente cliente) throws Exception {
+
+        sql = "INSERT INTO cliente(documentoc, nombres, apellidos, direccion,telefono,correo) "
+                + "VALUES(?,?,?,?,?,?)";
+
+        try {
+
+            con = estado.conectar();
+            ps = con.prepareStatement(sql);
+            ps.setString(1, cliente.getDocumento());
+            ps.setString(2, cliente.getNombres());
+            ps.setString(3, cliente.getApellidos());
+            ps.setString(4, cliente.getDireccion());
+            ps.setString(5, cliente.getTelefono());
+            ps.setString(6, cliente.getCorreo());
+            ps.executeUpdate();
+
+        } catch (PSQLException pe) {
+            pe.printStackTrace(System.err);
+            throw new Exception("Ya existe el Cliente");
+        } catch (SQLException e) {
+            e.printStackTrace(System.err);
+        } finally {
+            try {
+                con.close();
+                ps.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.err);
+            }
+        }
+
+    }
+
+    public void modificar(Object obj) throws Exception {
+
+        Cliente cliente = (Cliente) obj;
+        sql = "UPDATE cliente SET documentoc=?,nombres=?,apellidos=?,direccion=?,telefono=?,correo=? "
+                + "WHERE clienteid = ?";
+
+        try {
+
+            con = estado.conectar();
+            ps = con.prepareStatement(sql);
+            ps.setString(1, cliente.getDocumento());
+            ps.setString(2, cliente.getNombres());
+            ps.setString(3, cliente.getApellidos());
+            ps.setString(4, cliente.getDireccion());
+            ps.setString(5, cliente.getTelefono());
+            ps.setString(6, cliente.getCorreo());
+            ps.setInt(7, cliente.getClienteId());
+            ps.executeUpdate();
+
+        } catch (PSQLException pe) {
+            pe.printStackTrace(System.err);
+            throw new Exception("Ya existe el Cliente");
+        } catch (SQLException e) {
+            e.printStackTrace(System.err);
+        } finally {
+            try {
+                con.close();
+                ps.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace(System.err);
+            }
+        }
+
+    }
     
 }

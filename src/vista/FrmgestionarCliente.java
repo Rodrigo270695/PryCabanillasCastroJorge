@@ -1,26 +1,55 @@
-
 package vista;
 
+import controlador.ClienteController;
+import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import modelo.Cliente;
 
+public final class FrmgestionarCliente extends javax.swing.JInternalFrame {
 
-public class FrmgestionarCliente extends javax.swing.JInternalFrame {
-
+    ClienteController clienteC = new ClienteController();
+    int clienteId;
 
     public FrmgestionarCliente() {
         initComponents();
+        listar();
     }
 
-    void listar(){
-        
-        String columnas[] = {"ID","DNI","NOMBRES","APELLIDOS","DIRECCION","TELEFONO","CORREO"};
+    void listar() {
+
+        String columnas[] = {"ID", "DNI", "NOMBRES", "APELLIDOS", "DIRECCION", "TELEFONO", "CORREO"};
         DefaultTableModel modelo = new DefaultTableModel();
-        
+
         for (String columna : columnas) {
             modelo.addColumn(columna);
         }
-        
-        
+
+        List<Cliente> lista = clienteC.listar();
+
+        for (Cliente cliente : lista) {
+            modelo.addRow(new Object[]{
+                cliente.getClienteId(),
+                cliente.getDocumento(),
+                cliente.getNombres(),
+                cliente.getApellidos(),
+                cliente.getDireccion(),
+                cliente.getTelefono(),
+                cliente.getCorreo()
+            });
+        }
+
+        tblListado.setModel(modelo);
+    }
+    
+    void limpiar(){
+        txtApellidos.setText("");
+        txtBuscar.setText("");
+        txtDireccion.setText("");
+        txtDireccion.setText("");
+        txtDni.setText("");
+        txtNombres.setText("");
+        txtTelefono.setText("");
     }
 
     @SuppressWarnings("unchecked")
@@ -76,6 +105,11 @@ public class FrmgestionarCliente extends javax.swing.JInternalFrame {
         btnNuevo.setText("Nuevo");
 
         btnGranbar.setText("Grabar");
+        btnGranbar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGranbarActionPerformed(evt);
+            }
+        });
 
         btnEliminar.setText("Eliminar");
 
@@ -178,6 +212,11 @@ public class FrmgestionarCliente extends javax.swing.JInternalFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tblListado.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblListadoMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblListado);
 
         jLabel8.setText("Buscar:");
@@ -226,6 +265,42 @@ public class FrmgestionarCliente extends javax.swing.JInternalFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnGranbarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGranbarActionPerformed
+
+        if (btnGranbar.getText().equalsIgnoreCase("Grabar")) {
+
+            Cliente cliente = new Cliente();
+            cliente.setDocumento(txtDni.getText());
+            cliente.setNombres(txtNombres.getText());
+            cliente.setApellidos(txtApellidos.getText());
+            cliente.setCorreo(txtCorreo.getText());
+            cliente.setTelefono(txtTelefono.getText());
+            cliente.setDireccion(txtDireccion.getText());
+            try {
+
+                clienteC.registrar(cliente);
+                JOptionPane.showMessageDialog(this, "Cliente registrado");
+                listar();
+                limpiar();
+                
+            } catch (Exception e) {
+            }
+
+        } else {
+
+        }
+
+    }//GEN-LAST:event_btnGranbarActionPerformed
+
+    private void tblListadoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblListadoMouseClicked
+        
+        int fila = tblListado.getSelectedRow();
+        
+        clienteId = Integer.parseInt(tblListado.getValueAt(fila, 0).toString());
+        
+        
+    }//GEN-LAST:event_tblListadoMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
